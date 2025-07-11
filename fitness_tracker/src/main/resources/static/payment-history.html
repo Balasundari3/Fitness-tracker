@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker - Payment History</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .menu-item {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .menu-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .menu-description {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .add-payment { color: #27ae60; }
+        .view-history { color: #f39c12; }
+
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e5e9;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .payment-table th,
+        .payment-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .payment-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .payment-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">💪 Fitness Tracker</div>
+        <div>
+            <a href="dashboard.html" class="nav-btn">Dashboard</a>
+            <a href="index.html" class="nav-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Payment Management</h1>
+        
+        <div class="menu-grid">
+            <div class="menu-item" onclick="showAddPayment()">
+                <span class="menu-icon add-payment">💰</span>
+                <div class="menu-title">Add Payment</div>
+                <div class="menu-description">Record new payment transactions</div>
+            </div>
+            
+            <div class="menu-item" onclick="showPaymentHistory()">
+                <span class="menu-icon view-history">📊</span>
+                <div class="menu-title">View Payment History</div>
+                <div class="menu-description">Browse and filter payment records</div>
+            </div>
+        </div>
+
+        <!-- Add Payment Section -->
+        <div id="addPaymentSection" class="content-section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2 class="section-title">Add New Payment</h2>
+            
+            <form id="paymentForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="userId">User ID *</label>
+                        <input type="text" id="userId" name="userId" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Amount *</label>
+                        <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="paymentDate">Payment Date *</label>
+                        <input type="date" id="paymentDate" name="paymentDate" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">Add Payment</button>
+            </form>
+            
+            <div id="paymentMessage"></div>
+        </div>
+
+        <!-- Payment History Section -->
+        <div id="paymentHistorySection" class="content-section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2 class="section-title">Payment History</h2>
+            
+            <div class="filter-section">
+                <h3>Filter Payments</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterPayments('all')">All Payments</button>
+                    <button class="filter-btn" onclick="filterPayments('today')">Today</button>
+                    <button class="filter-btn" onclick="filterPayments('yesterday')">Yesterday</button>
+                    <button class="filter-btn" onclick="filterPayments('this-month')">This Month</button>
+                </div>
+            </div>
+            
+            <div id="paymentTableContainer">
+                <table class="payment-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentTableBody">
+                        <!-- Payment data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to today
+        document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+
+        function showMainMenu() {
+            document.getElementById('addPaymentSection').style.display = 'none';
+            document.getElementById('paymentHistorySection').style.display = 'none';
+            document.querySelector('.menu-grid').style.display = 'grid';
+        }
+
+        function showAddPayment() {
+            document.querySelector('.menu-grid').style.display = 'none';
+            document.getElementById('addPaymentSection').style.display = 'block';
+            document.getElementById('paymentHistorySection').style.display = 'none';
+        }
+
+        function showPaymentHistory() {
+            document.querySelector('.menu-grid').style.display = 'none';
+            document.getElementById('addPaymentSection').style.display = 'none';
+            document.getElementById('paymentHistorySection').style.display = 'block';
+            loadPaymentHistory('all');
+        }
+
+        // Add Payment Form Handler
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const paymentData = {
+                userId: formData.get('userId'),
+                amount: parseFloat(formData.get('amount')),
+                paymentDate: formData.get('paymentDate')
+            };
+            
+            const messageDiv = document.getElementById('paymentMessage');
+            
+            try {
+                const response = await fetch('/api/payments/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = data.message;
+                    e.target.reset();
+                    document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+                } else {
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = data.message;
+                }
+            } catch (error) {
+                messageDiv.className = 'message error';
+                messageDiv.textContent = 'Failed to add payment. Please try again.';
+            }
+        });
+
+        // Payment History Functions
+        async function loadPaymentHistory(filter) {
+            const tableBody = document.getElementById('paymentTableBody');
+            
+            try {
+                let url = '/api/payments/all';
+                if (filter !== 'all') {
+                    url = `/api/payments/filter?filter=${filter}`;
+                }
+                
+                const response = await fetch(url);
+                const payments = await response.json();
+                
+                if (payments.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px;">No payments found</td></tr>';
+                } else {
+                    tableBody.innerHTML = payments.map(payment => `
+                        <tr>
+                            <td>${payment.userId}</td>
+                            <td>$${payment.amount.toFixed(2)}</td>
+                            <td>${new Date(payment.paymentDate).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px; color: red;">Failed to load payments</td></tr>';
+            }
+        }
+
+        function filterPayments(filter) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load filtered payments
+            loadPaymentHistory(filter);
+        }
+    </script>
+</body>
+</html> 
